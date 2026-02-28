@@ -1,1 +1,3 @@
 .venv
+unitracker/unitracker/__pycache__
+unitracker/unitracker/spiders/__pycache__
