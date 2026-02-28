@@ -14,12 +14,13 @@ NEWSPIDER_MODULE = "unitracker.spiders"
 
 ADDONS = {}
 
+SHELL = 'ipython'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = "unitracker (+http://www.yourdomain.com)"
 
 # Obey robots.txt rules
-ROBOTSTXT_OBEY = True
+ROBOTSTXT_OBEY = False
 
 # Concurrency and throttling settings
 #CONCURRENT_REQUESTS = 16
