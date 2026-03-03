@@ -14,7 +14,7 @@ class SyllabustrackerSpider(scrapy.Spider):
         for i in final:
             data = i.xpath(".//td")
 
-            absolute_link = "https://csvtu.ac.in/ew/" + (data[2].css('a::attr(href)').get())[2:]
+            absolute_link = response.urljoin(data[2].css('a::attr(href)').get())
             
             yield response.follow(absolute_link,
                                   callback=self.parse_syllabus_page,
