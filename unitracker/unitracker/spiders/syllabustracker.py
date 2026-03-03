@@ -19,7 +19,7 @@ class SyllabustrackerSpider(scrapy.Spider):
             yield response.follow(absolute_link,
                                   callback=self.parse_syllabus_page,
                                   meta = {"Course Name": data[0].css('td::text').get(),
-                                          "Scheme-Link": data[1].css('a::attr(href)').get()})
+                                          "Scheme-Link": response.urljoin(data[1].css('a::attr(href)').get())})
 
             
 
