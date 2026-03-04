@@ -13,14 +13,28 @@ class SyllabustrackerSpider(scrapy.Spider):
 
         for i in final:
             data = i.xpath(".//td")
+            course_name = data[0].css('td::text').get()
+            scheme_link = response.urljoin(data[1].css('a::attr(href)').get())
 
             absolute_link = response.urljoin(data[2].css('a::attr(href)').get())
             
-            yield response.follow(absolute_link,
-                                  callback=self.parse_syllabus_page,
-                                  meta = {"Course Name": data[0].css('td::text').get(),
-                                          "Scheme-Link": response.urljoin(data[1].css('a::attr(href)').get())})
+            yield scrapy.Request(scheme_link,
+                                 method='HEAD',
+                                 callback=self.getetag,
+                                 meta = {"branchwise_link": absolute_link, 
+                                          "Course Name": course_name,
+                                          "Scheme-Link": scheme_link})
 
+    def getetag(self,response):
+        etag_binary = response.headers.get('ETag', b'')
+        etag = etag_binary.decode('utf-8')
+
+        parse_meta = response.meta.copy()
+        parse_meta['etag'] = etag
+
+        yield response.follow(response.meta['branchwise_link'],
+                              callback=self.parse_syllabus_page,
+                              meta = parse_meta)
             
 
         
@@ -35,10 +49,9 @@ class SyllabustrackerSpider(scrapy.Spider):
             upload_date = i.xpath('.//span[@class="__dt_update_date "]/text()').get()
             syllabus_link = i.css('a.wpdm-download-link.download-on-click.btn.btn-primary::attr(data-downloadurl)').get()
 
-            group[which_sem] = [response.meta["Course Name"], response.meta["Scheme-Link"], syllabus_link, upload_date]
+            group[which_sem] = [response.meta["Course Name"], response.meta["Scheme-Link"],response.meta['etag'], syllabus_link, upload_date]
         
         yield group
-            
         
 
             
