@@ -11,7 +11,7 @@ class SyllabustrackerSpider(scrapy.Spider):
         btech = left_block.xpath('.//a[normalize-space(.)="Bachelor of Technology (B.Tech.) with effective from session 2025-26 (for students enrolled from the year 2025-26)"]/ancestor::div[2]')
         final = btech.xpath(".//table//tr")
 
-        allowed_course = ['mechanical', 'computer science']
+        allowed_course = ['computer']
 
         for i in final:
             data = i.xpath(".//td")
@@ -19,7 +19,9 @@ class SyllabustrackerSpider(scrapy.Spider):
             scheme_link = response.urljoin(data[1].css('a::attr(href)').get())
             absolute_link = response.urljoin(data[2].css('a::attr(href)').get())
 
-            if all(i not in course_name.lower() for i in allowed_course):
+            course_name_set = set(course_name.lower().split())
+
+            if not any(i in course_name_set for i in allowed_course):
                 continue
             
             yield scrapy.Request(scheme_link,
