@@ -1,4 +1,5 @@
 import scrapy
+from unitracker.items import SchemeItem
 
 
 class SyllabustrackerSpider(scrapy.Spider):
@@ -54,10 +55,13 @@ class SyllabustrackerSpider(scrapy.Spider):
             which_sem = i.xpath('.//a[@class="package-title"]/text()').get()
             upload_date = i.xpath('.//span[@class="__dt_update_date "]/text()').get()
             syllabus_link = i.css('a.wpdm-download-link.download-on-click.btn.btn-primary::attr(data-downloadurl)').get()
-
-            group[which_sem] = [response.meta["Course Name"], response.meta["Scheme-Link"],response.meta['etag'], syllabus_link, upload_date]
         
-        yield group
+            yield SchemeItem(course_name = response.meta["Course Name"],
+                scheme_link = response.meta["Scheme-Link"],
+                scheme_etag = response.meta["etag"],
+                syllabus_link = syllabus_link,
+                upload_date = upload_date,
+                semester = which_sem)
         
 
             
