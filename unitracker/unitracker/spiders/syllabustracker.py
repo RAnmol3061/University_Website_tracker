@@ -49,20 +49,36 @@ class SyllabustrackerSpider(scrapy.Spider):
         left_block = response.css('div.col-md-6')
         syllabus = left_block.css('div.syllabus-content')
         rows = syllabus.xpath('.//tr[td]')
-        group = {}
 
         for i in rows:
             which_sem = i.xpath('.//a[@class="package-title"]/text()').get()
             upload_date = i.xpath('.//span[@class="__dt_update_date "]/text()').get()
             syllabus_link = i.css('a.wpdm-download-link.download-on-click.btn.btn-primary::attr(data-downloadurl)').get()
+            
+            # Carry forward meta backpack
+            previous_meta = response.meta.copy()
+            previous_meta['which_sem'] = which_sem
+            previous_meta['upload_date'] = upload_date
+            previous_meta['syllabus_link'] = syllabus_link
+
+            yield scrapy.Request(syllabus_link,
+                                 method='HEAD',
+                                 callback=self.syllabus_content_length,
+                                 meta = previous_meta)
         
-            yield SchemeItem(course_name = response.meta["Course Name"],
+    def syllabus_content_length(self,response):
+        syllabus_content_length = response.headers.get('content-length', b'')
+        syll_content_decode = syllabus_content_length.decode('utf-8')
+
+        yield SchemeItem(course_name = response.meta["Course Name"],
                 scheme_link = response.meta["Scheme-Link"],
                 scheme_etag = response.meta["etag"],
-                syllabus_link = syllabus_link,
-                upload_date = upload_date,
-                semester = which_sem)
-        
+                syllabus_link = response.meta['syllabus_link'],
+                upload_date = response.meta['upload_date'],
+                semester = response.meta['which_sem'],
+                syllabus_content_length = syll_content_decode)
+
+
 
             
         

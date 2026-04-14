@@ -13,3 +13,4 @@ class SchemeItem:
     syllabus_link: str
     upload_date: str
     semester: str
+    syllabus_content_length: str
