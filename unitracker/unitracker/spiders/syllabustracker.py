@@ -43,8 +43,6 @@ class SyllabustrackerSpider(scrapy.Spider):
                               callback=self.parse_syllabus_page,
                               meta = parse_meta)
             
-
-        
     def parse_syllabus_page(self,response):
         left_block = response.css('div.col-md-6')
         syllabus = left_block.css('div.syllabus-content')
@@ -77,8 +75,3 @@ class SyllabustrackerSpider(scrapy.Spider):
                 upload_date = response.meta['upload_date'],
                 semester = response.meta['which_sem'],
                 syllabus_content_length = syll_content_decode)
-
-
-
-            
-        
