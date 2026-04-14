@@ -73,9 +73,9 @@ RANDOM_DOWNLOAD_DELAY = True
 
 # Configure item pipelines
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
-#ITEM_PIPELINES = {
-#    "unitracker.pipelines.UnitrackerPipeline": 300,
-#}
+ITEM_PIPELINES = {
+    "unitracker.pipelines.UnitrackerPipeline": 300,
+}
 
 # Enable and configure HTTP caching (disabled by default)
 # See https://docs.scrapy.org/en/latest/topics/downloader-middleware.html#httpcache-middleware-settings
