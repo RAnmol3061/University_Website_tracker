@@ -5,17 +5,14 @@
 
 
 # useful for handling different item types with a single interface
-from itemadapter import ItemAdapter
-from unitracker.items import SchemeItem
-
+import re
 
 class UnitrackerPipeline:
-    def process_item(self, item, spider):
+    def process_item(self, item):   
 
         # Removes branch name and only keeps semester number
-        if '1' in item.semester:
-            item.semester = "Semester 1"
-        elif '2' in item.semester:
-            item.semester = "Semester 2"
+        match = re.search(r'semester \d', item.semester, re.IGNORECASE)
+        if match:
+            item.semester = match.group().capitalize()
 
         return item
