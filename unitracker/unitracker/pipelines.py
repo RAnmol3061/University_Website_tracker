@@ -6,6 +6,7 @@
 
 # useful for handling different item types with a single interface
 import re
+import sqlite3
 
 class UnitrackerPipeline:
     def process_item(self, item):   
@@ -16,3 +17,21 @@ class UnitrackerPipeline:
             item.semester = match.group().capitalize()
 
         return item
+
+class SavetoDBPipeline:
+    def open_spider(self):
+        self.con = sqlite3.connect("data.db")
+        self.cur = self.con.cursor()
+        self.cur.execute("""CREATE TABLE IF NOT EXISTS syllabus (
+                         Course_Name TEXT,
+                         Semester TEXT,
+                         Scheme_Link TEXT
+                         Syllabus_Link TEXT
+                         Scheme_ETAG TEXT
+                         Syllabus_Content_Length INTEGER
+                         Upload_Date TEXT
+                         )
+                         """)
+        self.con.commit()
+    
+

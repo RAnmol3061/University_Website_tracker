@@ -70,6 +70,7 @@ AUTOTHROTTLE_TARGET_CONCURRENCY = 2.0
 # See https://docs.scrapy.org/en/latest/topics/item-pipeline.html
 ITEM_PIPELINES = {
     "unitracker.pipelines.UnitrackerPipeline": 300,
+    "unitracker.pipelines.SavetoDBPipeline": 400, # Data goes through the lower number class to higher number class
 }
 
 # Enable and configure HTTP caching (disabled by default)
